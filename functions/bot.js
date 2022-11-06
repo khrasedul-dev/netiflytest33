@@ -60,7 +60,6 @@ const newUserScene = new Scenes.WizardScene('newUserScene',
 
         ctx.session.gen_captcha = 5
 
-        console.log(captcha.value)
 
         
         return ctx.wizard.next()
