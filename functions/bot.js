@@ -26,6 +26,9 @@ bot.start(ctx=>{
     ctx.reply("hi")
 })
 
+// cap folder
+const folder = './cap'
+
 const newUserScene = new Scenes.WizardScene('newUserScene', 
 
      ctx=>{
@@ -37,9 +40,17 @@ const newUserScene = new Scenes.WizardScene('newUserScene',
 
         ctx.session.type_captcha = ctx.update.message.text
 
+        
+
+        //genarate cap folder
+        if (!fs.existsSync(folder)) {
+            fs.mkdir(folder,{recursive: true},()=>{
+                console.log("Folder created sucessfully")
+            })
+        }
 
         const captcha = new Captcha()
-        captcha.PNGStream.pipe(fs.createWriteStream(path.join(`cap/${captcha.value}.png`)))
+        captcha.PNGStream.pipe(fs.createWriteStream(path.join(__dirname, `/cap/${captcha.value}.png`)))
 
         ctx.replyWithPhoto({source: fs.createReadStream(`cap/${captcha.value}.png`)},{caption: `Prove you are not human [All are uppercase character]`})
         .catch(e=>console.log(e))
@@ -60,6 +71,11 @@ const newUserScene = new Scenes.WizardScene('newUserScene',
 
             if(ctx.session.type_captcha == ctx.session.gen_captcha){
 
+                //cap folder delete
+                rimraf(folder,()=>{
+                    console.log("File and folder deleted sucessfully")
+                })
+
                 ctx.telegram.sendMessage(ctx.chat.id, chooseOption, {
                     reply_markup: {
                         inline_keyboard: [
@@ -73,6 +89,18 @@ const newUserScene = new Scenes.WizardScene('newUserScene',
                 return ctx.wizard.next()
     
             }else{
+                
+                //cap folder delete
+                rimraf(folder,()=>{
+                    console.log("File and folder deleted sucessfully")
+                })
+
+                //genarate cap folder
+                if (!fs.existsSync(folder)) {
+                    fs.mkdir(folder,{recursive: true},()=>{
+                        console.log("Folder created sucessfully")
+                    })
+                }
 
                 return ctx.scene.reenter()
     
