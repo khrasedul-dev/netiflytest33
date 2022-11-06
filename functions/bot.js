@@ -5,7 +5,7 @@ const rimraf = require('rimraf')
 const svg2img = require('svg2img')
 const svgCaptcha = require('svg-captcha')
 
-const bot = new Telegraf(process.env.BOT_TOKEN || '5664553037:AAFGAwBIkrE5A4zrmimZG3WdfntePX9jljA')
+const bot = new Telegraf(process.env.BOT_TOKEN)
 
 
 bot.use(session())
