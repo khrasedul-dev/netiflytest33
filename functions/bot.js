@@ -22,6 +22,9 @@ I will bring my audience with me to build this community!
 I will help build this community!
 `
 
+bot.start(ctx=>{
+    ctx.reply("hi")
+})
 
 const newUserScene = new Scenes.WizardScene('newUserScene', 
 
