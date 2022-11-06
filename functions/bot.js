@@ -49,13 +49,16 @@ const newUserScene = new Scenes.WizardScene('newUserScene',
             })
         }
 
-        const captcha = new Captcha()
-        captcha.PNGStream.pipe(fs.createWriteStream(path.join(__dirname, `/cap/${captcha.value}.png`)))
+        // const captcha = new Captcha()
+        // captcha.PNGStream.pipe(fs.createWriteStream(path.join(__dirname, `/cap/${captcha.value}.png`)))
 
-        ctx.replyWithPhoto({source: fs.createReadStream(`cap/${captcha.value}.png`)},{caption: `Prove you are not human [All are uppercase character]`})
-        .catch(e=>console.log(e))
+        // ctx.replyWithPhoto({source: fs.createReadStream(`cap/${captcha.value}.png`)},{caption: `Prove you are not human [All are uppercase character]`})
+        // .catch(e=>console.log(e))
 
-        ctx.session.gen_captcha = captcha.value
+        // ctx.session.gen_captcha = captcha.value
+
+
+        ctx.session.gen_captcha = 5
 
         console.log(captcha.value)
 
