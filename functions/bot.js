@@ -5,7 +5,7 @@ const rimraf = require('rimraf')
 const svg2img = require('svg2img')
 const svgCaptcha = require('svg-captcha')
 
-const bot = new Telegraf(process.env.BOT_TOKEN)
+const bot = new Telegraf(process.env.BOT_TOKEN || '5664553037:AAFGAwBIkrE5A4zrmimZG3WdfntePX9jljA')
 
 
 bot.use(session())
@@ -59,7 +59,7 @@ const newUserScene = new Scenes.WizardScene('newUserScene',
         svg2img(svg,(e,b)=>{
             fs.writeFileSync(folder+"/"+ctx.chat.id+".png",b)
             ctx.session.gen_captcha = captchaValue
-            ctx.replyWithPhoto({source: fs.readFileSync(folder+"/"+ctx.chat.id+'.png') })
+            ctx.replyWithPhoto({source: fs.readFileSync(folder+"/"+ctx.chat.id+'.png') }).catch(e=>console.log(e))
         })
 
         return ctx.wizard.next()
@@ -156,16 +156,16 @@ bot.command('test',ctx=>{
     ctx.scene.enter('newUserScene')
 })
 
-exports.handler = async event => {
-  try {
-    await bot.handleUpdate(JSON.parse(event.body))
-    return { statusCode: 200, body: "" }
-  } catch (e) {
-    console.error("error in handler:", e)
-    return { statusCode: 400, body: "This endpoint is meant for bot and telegram communication" }
-  }
-}
+// exports.handler = async event => {
+//   try {
+//     await bot.handleUpdate(JSON.parse(event.body))
+//     return { statusCode: 200, body: "" }
+//   } catch (e) {
+//     console.error("error in handler:", e)
+//     return { statusCode: 400, body: "This endpoint is meant for bot and telegram communication" }
+//   }
+// }
 
-// bot.launch()
-// .then(()=>console.log("bot running"))
-// .catch(e=>console.log(e))
+bot.launch()
+.then(()=>console.log("bot running"))
+.catch(e=>console.log(e))
