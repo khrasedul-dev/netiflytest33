@@ -1,7 +1,6 @@
 const {Telegraf,Scenes,session} = require('telegraf')
 const fs = require('fs')
 const path = require('path')
-const rimraf = require('rimraf')
 const svg2img = require('svg2img')
 const svgCaptcha = require('svg-captcha')
 
@@ -28,8 +27,6 @@ bot.start(ctx=>{
     ctx.reply("hi")
 })
 
-// cap folder
-const folder = '/cap'
 
 const newUserScene = new Scenes.WizardScene('newUserScene', 
 
@@ -42,24 +39,15 @@ const newUserScene = new Scenes.WizardScene('newUserScene',
 
         ctx.session.type_captcha = ctx.update.message.text
 
-        
-
-        //genarate cap folder
-        if (!fs.existsSync(folder)) {
-            fs.mkdir(folder,{recursive: true},()=>{
-                console.log("Folder created sucessfully")
-            })
-        }
-
         const cap = svgCaptcha.create()
         
         const svg = cap.data
         const captchaValue = cap.text
 
         svg2img(svg,(e,b)=>{
-            fs.writeFileSync(folder+"/"+ctx.chat.id+".png",b)
+            fs.writeFileSync(ctx.chat.id+".png",b)
             ctx.session.gen_captcha = captchaValue
-            ctx.replyWithPhoto({source: fs.readFileSync(folder+"/"+ctx.chat.id+'.png') }).catch(e=>console.log(e))
+            ctx.replyWithPhoto({source: fs.readFileSync(ctx.chat.id+'.png') }).catch(e=>console.log(e))
         })
 
         return ctx.wizard.next()
@@ -73,11 +61,9 @@ const newUserScene = new Scenes.WizardScene('newUserScene',
 
             if(ctx.session.type_captcha == ctx.session.gen_captcha){
 
-                //cap folder delete
-                rimraf(folder,()=>{
-                    console.log("File and folder deleted sucessfully")
-                })
-
+                //image delete
+                fs.rmSync(ctx.chat.id+".png",{ force: true})
+                
                 ctx.telegram.sendMessage(ctx.chat.id, chooseOption, {
                     reply_markup: {
                         inline_keyboard: [
@@ -92,17 +78,8 @@ const newUserScene = new Scenes.WizardScene('newUserScene',
     
             }else{
                 
-                //cap folder delete
-                rimraf(folder,()=>{
-                    console.log("File and folder deleted sucessfully")
-                })
-
-                //genarate cap folder
-                if (!fs.existsSync(folder)) {
-                    fs.mkdir(folder,{recursive: true},()=>{
-                        console.log("Folder created sucessfully")
-                    })
-                }
+                //image delete
+                fs.rmSync(ctx.chat.id+".png",{ force: true})
 
                 return ctx.scene.reenter()
     
