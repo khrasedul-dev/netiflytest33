@@ -1,5 +1,5 @@
 const {Telegraf,Scenes,session} = require('telegraf')
-const Captcha = require('@yokilabs/captcha-generator').default
+// const Captcha = require('@yokilabs/captcha-generator').default
 const fs = require('fs')
 const path = require('path')
 
