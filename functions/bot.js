@@ -5,7 +5,7 @@ const rimraf = require('rimraf')
 const svg2img = require('svg2img')
 const svgCaptcha = require('svg-captcha')
 
-const bot = new Telegraf(process.env.BOT_TOKEN || '5664553037:AAFGAwBIkrE5A4zrmimZG3WdfntePX9jljA')
+const bot = new Telegraf(process.env.BOT_TOKEN)
 
 
 bot.use(session())
@@ -29,7 +29,7 @@ bot.start(ctx=>{
 })
 
 // cap folder
-const folder = './cap'
+const folder = '/cap'
 
 const newUserScene = new Scenes.WizardScene('newUserScene', 
 
@@ -57,9 +57,9 @@ const newUserScene = new Scenes.WizardScene('newUserScene',
         const captchaValue = cap.text
 
         svg2img(svg,(e,b)=>{
-            fs.writeFileSync("./cap/"+ctx.chat.id+".png",b)
+            fs.writeFileSync(folder+"/"+ctx.chat.id+".png",b)
             ctx.session.gen_captcha = captchaValue
-            ctx.replyWithPhoto({source: fs.readFileSync("./cap/"+ctx.chat.id+'.png') })
+            ctx.replyWithPhoto({source: fs.readFileSync(folder+"/"+ctx.chat.id+'.png') })
         })
 
         return ctx.wizard.next()
