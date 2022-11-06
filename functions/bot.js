@@ -2,9 +2,10 @@ const {Telegraf,Scenes,session} = require('telegraf')
 const fs = require('fs')
 const path = require('path')
 const rimraf = require('rimraf')
+const svg2img = require('svg2img')
+const svgCaptcha = require('svg-captcha')
 
-
-const bot = new Telegraf(process.env.BOT_TOKEN)
+const bot = new Telegraf(process.env.BOT_TOKEN || '5664553037:AAFGAwBIkrE5A4zrmimZG3WdfntePX9jljA')
 
 
 bot.use(session())
@@ -32,7 +33,7 @@ const folder = './cap'
 
 const newUserScene = new Scenes.WizardScene('newUserScene', 
 
-     ctx=>{
+    async ctx=>{
 
         ctx.session = {}
 
@@ -50,19 +51,17 @@ const newUserScene = new Scenes.WizardScene('newUserScene',
             })
         }
 
-        // const captcha = new Captcha()
-        // captcha.PNGStream.pipe(fs.createWriteStream(path.join(__dirname, `/cap/${captcha.value}.png`)))
-
-        // ctx.replyWithPhoto({source: fs.createReadStream(`cap/${captcha.value}.png`)},{caption: `Prove you are not human [All are uppercase character]`})
-        // .catch(e=>console.log(e))
-
-        // ctx.session.gen_captcha = captcha.value
-
-
-        ctx.session.gen_captcha = 5
-
-
+        const cap = svgCaptcha.create()
         
+        const svg = cap.data
+        const captchaValue = cap.text
+
+        svg2img(svg,(e,b)=>{
+            fs.writeFileSync("./cap/"+ctx.chat.id+".png",b)
+            ctx.session.gen_captcha = captchaValue
+            ctx.replyWithPhoto({source: fs.readFileSync("./cap/"+ctx.chat.id+'.png') })
+        })
+
         return ctx.wizard.next()
 
     },
@@ -166,3 +165,7 @@ exports.handler = async event => {
     return { statusCode: 400, body: "This endpoint is meant for bot and telegram communication" }
   }
 }
+
+// bot.launch()
+// .then(()=>console.log("bot running"))
+// .catch(e=>console.log(e))
