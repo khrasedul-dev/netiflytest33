@@ -3,7 +3,7 @@ const {Telegraf,Scenes,session} = require('telegraf')
 const fs = require('fs')
 const path = require('path')
 
-const bot = new Telegraf(process.env.TOKEN)
+const bot = new Telegraf(process.env.BOT_TOKEN)
 
 
 bot.use(session())
